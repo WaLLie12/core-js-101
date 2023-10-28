@@ -70,8 +70,10 @@ function getFactorial(n) {
  *   5,10  =>  45 ( = 5+6+7+8+9+10 )
  *   -1,1  =>  0  ( = -1 + 0 + 1 )
  */
-function getSumBetweenNumbers(/* n1, n2 */) {
-  throw new Error('Not implemented');
+function getSumBetweenNumbers(n1, n2) {
+  const array = Array.from({ length: (n2 - n1) + 1 }, (_, index) => index + n1);
+  const secondArray = array.reduce((accumulator, element) => accumulator + element, 0);
+  return secondArray;
 }
 
 
@@ -90,8 +92,8 @@ function getSumBetweenNumbers(/* n1, n2 */) {
  *   10,1,1   =>  false
  *   10,10,10 =>  true
  */
-function isTriangle(/* a, b, c */) {
-  throw new Error('Not implemented');
+function isTriangle(a, b, c) {
+  return a + b > c && a + c > b && b + c > a;
 }
 
 
@@ -127,8 +129,23 @@ function isTriangle(/* a, b, c */) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-  throw new Error('Not implemented');
+function doRectanglesOverlap(rect1, rect2) {
+  if (rect1.left + rect1.width < rect2.left) {
+    return false;
+  }
+  if (rect1.left > rect2.left + rect2.width) {
+    return false;
+  }
+
+  if (rect1.top + rect1.height < rect2.top) {
+    return false;
+  }
+
+  if (rect1.top > rect2.top + rect2.height) {
+    return false;
+  }
+
+  return true;
 }
 
 
@@ -158,8 +175,12 @@ function doRectanglesOverlap(/* rect1, rect2 */) {
  *   { center: { x:0, y:0 }, radius:10 },  { x:10, y:10 }   => false
  *
  */
-function isInsideCircle(/* circle, point */) {
-  throw new Error('Not implemented');
+function isInsideCircle(circle, point) {
+  const dx = point.x - circle.center.x;
+  const dy = point.y - circle.center.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  return distance < circle.radius;
 }
 
 
@@ -174,8 +195,21 @@ function isInsideCircle(/* circle, point */) {
  *   'abracadabra'  => 'c'
  *   'entente' => null
  */
-function findFirstSingleChar(/* str */) {
-  throw new Error('Not implemented');
+function findFirstSingleChar(str) {
+  function findNonRepeatedChar(index) {
+    if (index >= str.length) {
+      return null;
+    }
+
+    const currentChar = str.charAt(index);
+    if (str.indexOf(currentChar) === str.lastIndexOf(currentChar)) {
+      return currentChar;
+    }
+
+    return findNonRepeatedChar(index + 1);
+  }
+
+  return findNonRepeatedChar(0);
 }
 
 
@@ -201,8 +235,14 @@ function findFirstSingleChar(/* str */) {
  *   5, 3, true, true   => '[3, 5]'
  *
  */
-function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
-  throw new Error('Not implemented');
+function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
+  const start = Math.min(a, b);
+  const end = Math.max(a, b);
+
+  const startBracket = isStartIncluded ? '[' : '(';
+  const endBracket = isEndIncluded ? ']' : ')';
+
+  return `${startBracket}${start}, ${end}${endBracket}`;
 }
 
 
@@ -218,8 +258,8 @@ function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
  * 'rotator' => 'rotator'
  * 'noon' => 'noon'
  */
-function reverseString(/* str */) {
-  throw new Error('Not implemented');
+function reverseString(str) {
+  return str.split('').reverse().join('');
 }
 
 
@@ -235,8 +275,13 @@ function reverseString(/* str */) {
  *   87354 => 45378
  *   34143 => 34143
  */
-function reverseInteger(/* num */) {
-  throw new Error('Not implemented');
+function reverseInteger(num) {
+  const reversedString = String(num)
+    .split('')
+    .reverse()
+    .join('');
+
+  return parseInt(reversedString, 10);
 }
 
 
@@ -261,8 +306,8 @@ function reverseInteger(/* num */) {
  *   4916123456789012 => false
  */
 function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
 }
+
 
 /**
  * Returns the digital root of integer:
@@ -279,7 +324,6 @@ function isCreditCardNumber(/* ccn */) {
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
 function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
 }
 
 
@@ -305,7 +349,6 @@ function getDigitalRoot(/* num */) {
  *   '{[(<{[]}>)]}' = true
  */
 function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
 }
 
 
@@ -329,8 +372,27 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
+/**
+ * Returns the string with n-ary (binary, ternary, etc, where n <= 10)
+ * representation of specified number.
+ * See more about
+ * https://en.wikipedia.org/wiki/Binary_number
+ * https://en.wikipedia.org/wiki/Ternary_numeral_system
+ * https://en.wikipedia.org/wiki/Radix
+ *
+ * @param {number} num
+ * @param {number} n, radix of the result
+ * @return {string}
+ *
+ * @example:
+ *   1024, 2  => '10000000000'
+ *   6561, 3  => '100000000'
+ *    365, 2  => '101101101'
+ *    365, 3  => '111112'
+ *    365, 4  => '11231'
+ *    365, 10 => '365'
+ */
 function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
 }
 
 
@@ -347,7 +409,6 @@ function toNaryString(/* num, n */) {
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
 function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
 }
 
 
@@ -370,7 +431,6 @@ function getCommonDirectoryPath(/* pathes */) {
  *
  */
 function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
 }
 
 
@@ -405,7 +465,6 @@ function getMatrixProduct(/* m1, m2 */) {
  *
  */
 function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
 }
 
 

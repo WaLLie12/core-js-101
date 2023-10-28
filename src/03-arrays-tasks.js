@@ -286,7 +286,6 @@ function getSecondItems(arr) {
  */
 function propagateItemsByPositionIndex(arr) {
   return arr.reduce((result, current, index) => {
-    // Use Array.from to create an array of the same value repeated 'index + 1' times
     const repeatedElements = Array.from({ length: index + 1 }, () => current);
     return result.concat(repeatedElements);
   }, []);
