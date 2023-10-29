@@ -305,7 +305,26 @@ function reverseInteger(num) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
+function isCreditCardNumber(ccn) {
+  const ccnStr = ccn.toString();
+  const reversedDigits = ccnStr.split('').reverse();
+
+  let sum = 0;
+
+  for (let i = 0; i < reversedDigits.length; i += 1) {
+    let digit = parseInt(reversedDigits[i], 10);
+
+    if (i % 2 === 1) {
+      digit *= 2;
+      if (digit > 9) {
+        digit -= 9;
+      }
+    }
+
+    sum += digit;
+  }
+
+  return sum % 10 === 0;
 }
 
 
@@ -323,7 +342,16 @@ function isCreditCardNumber(/* ccn */) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
+function getDigitalRoot(num) {
+  let currentNum = num;
+  while (currentNum > 9) {
+    currentNum = String(currentNum)
+      .split('')
+      .map(Number)
+      .reduce((sum, digit) => sum + digit, 0);
+  }
+
+  return currentNum;
 }
 
 
@@ -348,7 +376,36 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
+function isBracketsBalanced(str) {
+  const bracketPairs = {
+    '[': ']',
+    '(': ')',
+    '{': '}',
+    '<': '>',
+  };
+
+  function checkBrackets(string, openBrackets = '') {
+    if (string === '') {
+      return openBrackets === '';
+    }
+
+    const [char, rest] = [string[0], string.slice(1)];
+
+    if (bracketPairs[char]) {
+      return checkBrackets(rest, openBrackets + char);
+    }
+    if (Object.values(bracketPairs).includes(char)) {
+      const lastOpenBracket = openBrackets.charAt(openBrackets.length - 1);
+      if (bracketPairs[lastOpenBracket] === char) {
+        return checkBrackets(rest, openBrackets.slice(0, openBrackets.length - 1));
+      }
+      return false;
+    }
+
+    return checkBrackets(rest, openBrackets);
+  }
+
+  return checkBrackets(str);
 }
 
 
@@ -392,7 +449,16 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
+function toNaryString(num, n) {
+  if (n < 2 || n > 10) {
+    throw new Error('Radix n should be between 2 and 10.');
+  }
+
+  if (num === 0) {
+    return '0';
+  }
+
+  return num.toString(n);
 }
 
 
@@ -408,7 +474,23 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
+function getCommonDirectoryPath(pathes) {
+  const splitPaths = pathes.map((path) => path.split('/'));
+  const commonPath = [];
+
+  for (let i = 0; i < splitPaths[0].length; i += 1) {
+    const segment = splitPaths[0][i];
+
+    for (let j = 1; j < splitPaths.length; j += 1) {
+      if (splitPaths[j][i] !== segment) {
+        return commonPath.length === 0 ? '' : `${commonPath.join('/')}/`;
+      }
+    }
+
+    commonPath.push(segment);
+  }
+
+  return commonPath.length === 0 ? '' : `${commonPath.join('/')}/`;
 }
 
 
@@ -430,7 +512,24 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
+function getMatrixProduct(m1, m2) {
+  const rows1 = m1.length;
+  const cols1 = m1[0].length;
+  const cols2 = m2[0].length;
+
+  const result = new Array(rows1);
+
+  for (let i = 0; i < rows1; i += 1) {
+    result[i] = new Array(cols2);
+    for (let j = 0; j < cols2; j += 1) {
+      result[i][j] = 0;
+      for (let k = 0; k < cols1; k += 1) {
+        result[i][j] += m1[i][k] * m2[k][j];
+      }
+    }
+  }
+
+  return result;
 }
 
 
@@ -464,7 +563,27 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
+function evaluateTicTacToePosition(position) {
+  for (let i = 0; i < 3; i += 1) {
+    if (position[i][0] && position[i][0] === position[i][1] && position[i][0] === position[i][2]) {
+      return position[i][0];
+    }
+  }
+
+  for (let j = 0; j < 3; j += 1) {
+    if (position[0][j] && position[0][j] === position[1][j] && position[0][j] === position[2][j]) {
+      return position[0][j];
+    }
+  }
+
+  if (position[0][0] && position[0][0] === position[1][1] && position[0][0] === position[2][2]) {
+    return position[0][0];
+  }
+  if (position[0][2] && position[0][2] === position[1][1] && position[0][2] === position[2][0]) {
+    return position[0][2];
+  }
+
+  return undefined;
 }
 
 
